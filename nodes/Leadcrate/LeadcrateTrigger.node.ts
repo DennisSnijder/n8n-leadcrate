@@ -117,11 +117,7 @@ export class LeadcrateTrigger implements INodeType {
 	methods = {
 		loadOptions: {
 			async getOrganizations(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
-				const response = await this.helpers.requestWithAuthentication.call(this, 'leadcrateApi', {
-					url: `http://localhost:8080/public/organization`,
-					json: true
-				});
-
+				const response = await leadcrateApiRequest.call(this, 'GET', 'organization');
 				return response.map((organization: any) => ({name: organization.name, value: organization.id}));
 			},
 		},
