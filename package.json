@@ -1,19 +1,19 @@
 {
-  "name": "n8n-nodes-<...>",
+  "name": "@leadcrate/n8n-leadcrate",
   "version": "0.1.0",
-  "description": "",
+  "description": "N8N Leadcrate integration, trigger & action nodes",
   "keywords": [
     "n8n-community-node-package"
   ],
   "license": "MIT",
   "homepage": "",
   "author": {
-    "name": "",
-    "email": ""
+    "name": "Dennis Snijder",
+    "email": "dennis@snijder.io"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/<...>/n8n-nodes-<...>.git"
+    "url": "https://github.com/dennissnijder/n8n-leadcrate.git"
   },
   "main": "index.js",
   "scripts": {
@@ -30,12 +30,11 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/ExampleCredentialsApi.credentials.js",
-      "dist/credentials/HttpBinApi.credentials.js"
+      "dist/credentials/LeadcrateApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/ExampleNode/ExampleNode.node.js",
-      "dist/nodes/HttpBin/HttpBin.node.js"
+      "dist/nodes/Leadcrate/LeadcrateTrigger.node.js",
+      "dist/nodes/Leadcrate/Leadcrate.node.js"
     ]
   },
   "devDependencies": {
