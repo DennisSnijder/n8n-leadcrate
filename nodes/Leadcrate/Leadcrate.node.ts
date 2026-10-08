@@ -1,4 +1,4 @@
-import { IExecuteFunctions, INodeExecutionData, INodeType, INodeTypeDescription } from "n8n-workflow";
+import { IDataObject, IExecuteFunctions, INodeExecutionData, INodeType, INodeTypeDescription } from "n8n-workflow";
 import { crateOperations } from "./CrateDescription";
 import { leadcrateApiRequest } from "./generic.functions";
 
@@ -61,23 +61,17 @@ export class Leadcrate implements INodeType {
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const returnData: INodeExecutionData[] = [];
-		let responseData;
+		const items = this.getInputData();
 
-		const resource = this.getNodeParameter('resource', 0);
-		const operation = this.getNodeParameter('operation', 0);
+		for (let i = 0; i < items.length; i++) {
+			const resource = this.getNodeParameter('resource', i);
+			const operation = this.getNodeParameter('operation', i);
 
-		if (resource === 'crate' && operation === 'getMany') {
-			responseData = await leadcrateApiRequest.call(
-				this,
-				'GET',
-				`crate`,
-				{},
-			);
+			if (resource === 'crate' && operation === 'getMany') {
+				const crates = (await leadcrateApiRequest.call(this, 'GET', 'crate')) as IDataObject[];
+				returnData.push(...crates.map((crate) => ({ json: crate, pairedItem: { item: i } })));
+			}
 		}
-
-		returnData.push({
-			json: responseData
-		})
 
 		return [ returnData ];
 	}

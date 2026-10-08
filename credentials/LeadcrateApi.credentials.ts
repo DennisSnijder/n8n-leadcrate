@@ -17,6 +17,13 @@ export class LeadcrateApi implements ICredentialType {
 			typeOptions: { password: true },
 			default: '',
 		},
+		{
+			displayName: 'Base URL',
+			name: 'baseUrl',
+			type: 'string',
+			default: 'https://api.leadcrate.io',
+			description: 'Only change this to point at a staging or local Leadcrate API',
+		},
 	];
 
 	authenticate: IAuthenticateGeneric = {
@@ -30,7 +37,7 @@ export class LeadcrateApi implements ICredentialType {
 
 	test: ICredentialTestRequest = {
 		request: {
-			baseURL: 'https://api.leadcrate.io/public',
+			baseURL: '={{$credentials.baseUrl}}/public',
 			url: '/user',
 		},
 	};
