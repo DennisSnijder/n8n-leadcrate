@@ -26,7 +26,7 @@ export async function leadcrateApiRequest(
 		method,
 		qs,
 		body,
-		url: uri || `https://api.leadcrate.io/public/${ resource }`,
+		url: uri || `${ await getBaseUrl.call(this) }/public/${ resource }`,
 		json: true,
 	};
 
@@ -37,3 +37,41 @@ export async function leadcrateApiRequest(
 	}
 }
 
+
+async function getBaseUrl(
+	this: IHookFunctions | IExecuteFunctions | ILoadOptionsFunctions | IWebhookFunctions,
+): Promise<string> {
+	const credentials = await this.getCredentials('leadcrateApi');
+	return ((credentials.baseUrl as string) || 'https://api.leadcrate.io').replace(/\/+$/, '');
+}
+
+/**
+ * Fetches every page of a paginated Leadcrate endpoint ({ data, total, limit, offset }).
+ */
+export async function leadcrateApiRequestAllItems(
+	this: IHookFunctions | IExecuteFunctions | ILoadOptionsFunctions | IWebhookFunctions,
+	method: IHttpRequestMethods,
+	resource: string,
+	body: any = {},
+	qs: IDataObject = {},
+): Promise<any[]> {
+	const limit = 100;
+	const items: any[] = [];
+	let offset = 0;
+	let total = Infinity;
+
+	while (offset < total) {
+		const response = await leadcrateApiRequest.call(this, method, resource, body, { ...qs, limit, offset });
+		const page = (response?.data ?? []) as any[];
+
+		items.push(...page);
+		total = response?.total ?? items.length;
+		offset += limit;
+
+		if (page.length === 0) {
+			break;
+		}
+	}
+
+	return items;
+}

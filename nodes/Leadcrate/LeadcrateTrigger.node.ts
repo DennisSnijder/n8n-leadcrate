@@ -6,7 +6,7 @@ import {
 	INodeType,
 	INodeTypeDescription, IWebhookFunctions, IWebhookResponseData
 } from "n8n-workflow";
-import { leadcrateApiRequest } from "./generic.functions";
+import { leadcrateApiRequest, leadcrateApiRequestAllItems } from "./generic.functions";
 
 
 export class LeadcrateTrigger implements INodeType {
@@ -117,8 +117,11 @@ export class LeadcrateTrigger implements INodeType {
 	methods = {
 		loadOptions: {
 			async getOrganizations(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
-				const response = await leadcrateApiRequest.call(this, 'GET', 'organization');
-				return response.map((organization: any) => ({name: organization.name, value: organization.id}));
+				// The endpoint is paginated ({ data, total, limit, offset }), so page through it
+				const organizations = await leadcrateApiRequestAllItems.call(this, 'GET', 'organization');
+				return organizations
+					.map((organization: any) => ({ name: organization.name, value: organization.id }))
+					.sort((a: INodePropertyOptions, b: INodePropertyOptions) => a.name.localeCompare(b.name));
 			},
 		},
 	};
