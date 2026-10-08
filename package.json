@@ -1,7 +1,8 @@
 {
-  "name": "@leadcrate/n8n-leadcrate",
-  "version": "0.1.0",
+  "name": "@leadcrate/n8n-nodes-leadcrate",
+  "version": "0.2.0",
   "description": "N8N Leadcrate integration, trigger & action nodes",
+  "private": false,
   "keywords": [
     "n8n-community-node-package"
   ],
